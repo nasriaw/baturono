@@ -18,8 +18,15 @@ def forecast_health_metrics(history_list):
     if len(history_list) < 4:
         return None
     df = pd.DataFrame(history_list)
+    
+    # Memastikan kolom 'ds' dikonversi menjadi tipe datetime pandas secara eksplisit
+    df['ds'] = pd.to_datetime(df['ds'])
+    
     model = Prophet(yearly_seasonality=False, daily_seasonality=True)
     model.fit(df)
-    future = model.make_future_dataframe(periods=3, freq='H')
+    
+    # Perbaikan: Mengubah 'H' menjadi 'h' (huruf kecil) agar kompatibel dengan pandas versi baru
+    future = model.make_future_dataframe(periods=3, freq='h')
+    
     forecast = model.predict(future)
     return forecast[['ds', 'yhat']].tail(3)
