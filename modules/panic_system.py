@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
+from zoneinfo import ZoneInfo # Modul bawaan untuk mengatur zona waktu
 from database.firebase_db import get_db_ref
 
 def send_telegram_alert(message):
@@ -34,8 +35,9 @@ def trigger_panic_button(parent_username, lat, lon):
     # 2. Catat laporan insiden baru
     ref = get_db_ref("incidents")
     incident_id = ref.push().key
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+    # PERBAIKAN: Memaksa server menggunakan zona waktu WIB (GMT+7)
+    tz_wib = ZoneInfo("Asia/Jakarta")
+    timestamp = datetime.now(tz_wib).strftime("%Y-%m-%d %H:%M:%S")
     incident_data = {
         "incident_id": incident_id,
         "parent_username": parent_username,
