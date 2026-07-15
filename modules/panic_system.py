@@ -8,7 +8,7 @@ def send_telegram_alert(message):
     """Mengirim pesan darurat ke Telegram Group bantuorangtua via Bot"""
     if "telegram" in st.secrets:
         bot_token = st.secrets["telegram"]["TELEGRAM_BOT_TOKEN"]
-        chat_id = st.secrets["telegram"]["GROUP_CHAT_ID"]
+        chat_id = st.secrets["telegram"]["TELEGRAM_CHAT_ID"]
     else:
         # Placeholder lokal jika belum setting secrets
         bot_token = "DUMMY_TOKEN"
