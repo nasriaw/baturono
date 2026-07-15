@@ -7,8 +7,8 @@ from database.firebase_db import get_db_ref
 def send_telegram_alert(message):
     """Mengirim pesan darurat ke Telegram Group bantuorangtua via Bot"""
     if "telegram" in st.secrets:
-        bot_token = st.secrets["telegram"]["TELEGRAM_BOT_TOKEN"]
-        chat_id = st.secrets["telegram"]["TELEGRAM_CHAT_ID"]
+        bot_token = st.secrets["telegram"]["bot_token"]
+        chat_id = st.secrets["telegram"]["group_chat_id"]
     else:
         # Placeholder lokal jika belum setting secrets
         bot_token = "DUMMY_TOKEN"
