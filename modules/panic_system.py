@@ -23,7 +23,15 @@ def send_telegram_alert(message):
         return False
 
 def trigger_panic_button(parent_username, lat, lon):
-    """Mencatat status incident darurat ke Firebase dan menembakkan alert Telegram"""
+    """Mencatat status incident darurat ke Firebase, update lokasi user, dan kirim alert Telegram"""
+    # 1. Update koordinat terbaru orang tua di node /users agar terbaca di peta anak/admin
+    user_ref = get_db_ref(f"users/{parent_username}")
+    user_ref.update({
+        "latitude": lat,
+        "longitude": lon
+    })
+
+    # 2. Catat laporan insiden baru
     ref = get_db_ref("incidents")
     incident_id = ref.push().key
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -39,14 +47,14 @@ def trigger_panic_button(parent_username, lat, lon):
     }
     ref.child(incident_id).set(incident_data)
     
-    # Template pesan untuk grup Telegram bantuorangtua
+    # 3. Template kirim pesan ke Telegram Group
     msg = (
         f"🚨 *PANIC BUTTON AKTIF! KEDARURATAN LANSIA* 🚨\n\n"
         f"👤 *Nama Orang Tua:* {parent_username}\n"
         f"📅 *Waktu Kejadian:* {timestamp}\n"
         f"📍 *Koordinat GPS:* `{lat}, {lon}`\n"
         f"🗺️ *Rute Google Maps:* https://www.google.com/maps/search/?api=1&query={lat},{lon}\n\n"
-        f"Mohon Rekawan terdekat segera menuju ke lokasi!"
+        f"Mohon Relawan terdekat segera menuju ke lokasi!"
     )
     send_telegram_alert(msg)
     return incident_id
